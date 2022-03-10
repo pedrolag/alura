@@ -1,18 +1,15 @@
 const express = require('express')
-const bodyParser = require('body-parser')
+const bodyPaser = require('body-parser')
 const config = require('config')
-const router = require('./routes/router.routes')
+const router = require('./routes/providers')
 
-// Creates the App
 const app = express()
 
-app.use(bodyParser.json())
+app.use(bodyPaser.json())
 
-// Routes
-app.use('/api/provider', router.providers)
+app.use('/api/providers', router)
 
-// Executes the App
 app.listen(
 	config.get('api.port'),
-	() => console.log(`Running at http://localhost:${config.get('api.port')}`)
+	console.log(`Running app at http://localhost:${config.get('api.port')}`)
 )

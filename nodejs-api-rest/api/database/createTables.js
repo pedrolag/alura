@@ -1,6 +1,5 @@
-const EntityProvider = require('../Provider/Provider.entity')
+const ModelTableProviders = require('../routes/providers/ModelTableProviders')
 
-EntityProvider
+ModelTableProviders
 	.sync()
-	.then(() => console.log("Table \"Providers\" has been created"))
-	.catch(console.log)
+	.then(() => console.log('Table "providers" has been created'))

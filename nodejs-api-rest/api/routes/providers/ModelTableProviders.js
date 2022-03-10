@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize')
-const connection = require('../database')
+const instance = require('../../database')
 
 const columns = {
 	company: {
@@ -13,7 +13,7 @@ const columns = {
 	category: {
 		type: Sequelize.ENUM('food', 'toy'),
 		allowNull: false
-	},
+	}
 }
 
 const options = {
@@ -25,8 +25,8 @@ const options = {
 	version: 'version'
 }
 
-module.exports = connection.define(
+module.exports = instance.define(
 	'provider',
 	columns,
 	options
-)
+);
