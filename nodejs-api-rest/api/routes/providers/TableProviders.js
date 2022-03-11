@@ -3,7 +3,7 @@ const NotFound = require('../../errors/NotFound')
 
 module.exports = {
 	findAll() {
-		return ModelTableProviders.findAll()
+		return ModelTableProviders.findAll({ raw: true })
 	},
 
 	async findOne(id) {

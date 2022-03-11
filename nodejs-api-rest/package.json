@@ -15,6 +15,7 @@
     "sequelize": "^6.17.0"
   },
   "devDependencies": {
-    "config": "^3.3.7"
+    "config": "^3.3.7",
+    "jsontoxml": "^1.0.1"
   }
 }
