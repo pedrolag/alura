@@ -2,6 +2,7 @@ const router = require('express').Router()
 const TableProviders = require('./TableProviders')
 const Provider = require('./Provider')
 const ProviderSerializer = require('../../Serializer').ProviderSerializer
+const productsRouter = require('./routes/providers')
 
 router.get('/', async (request, response) => {
 	const result = await TableProviders.findAll()
@@ -95,5 +96,7 @@ router.delete('/:id', async (request, response, next) => {
 		next(error)
 	}
 })
+
+router.use('/:id/products', productsRouter)
 
 module.exports = router

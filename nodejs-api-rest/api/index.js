@@ -1,7 +1,7 @@
 const express = require('express')
 const bodyPaser = require('body-parser')
 const config = require('config')
-const router = require('./routes/providers')
+const providersRouter = require('./routes/providers')
 const NotFound = require('./errors/NotFound')
 const Invalid = require('./errors/Invalid')
 const NotProvided = require('./errors/NotProvided')
@@ -33,7 +33,7 @@ app.use((request, response, next) => {
 	next()
 })
 
-app.use('/api/providers', router)
+app.use('/api/providers', providersRouter)
 
 app.use((error, request, response, next) => {
 	if (error instanceof NotFound) {
