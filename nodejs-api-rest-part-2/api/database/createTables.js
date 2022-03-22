@@ -1,5 +1,12 @@
-const ModelTableProviders = require('../routes/providers/ModelTableProviders')
+const models = [
+	require('../routes/providers/ModelTableProviders'),
+	require('../routes/providers/products/ModelTableProducts'),
+]
 
-ModelTableProviders
-	.sync()
-	.then(() => console.log('Table "providers" has been created'))
+async function createTables() {
+	models.forEach(model => {
+		model.sync()
+	})
+}
+
+createTables()

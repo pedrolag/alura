@@ -2,37 +2,38 @@ const router = require('express').Router()
 const TableProviders = require('./TableProviders')
 const Provider = require('./Provider')
 const ProviderSerializer = require('../../Serializer').ProviderSerializer
+const ProductsRouter = require('./products')
 
 router.get('/', async (request, response) => {
 	const result = await TableProviders.findAll()
 	
 	response.status(200)
 
-	const serializer = new ProviderSerializer(
+	const providerSerializer = new ProviderSerializer(
 		response.getHeader('Content-Type')
 	)
 
 	response.send(
-		serializer.serialize(result)
+		providerSerializer.serialize(result)
 	)
 })
 
-router.get('/:id', async (request, response, next) => {
+router.get('/:providerId', async (request, response, next) => {
 	try {
-		const id = request.params.id
-		const provider = new Provider({ id: id })
+		const providerId = request.params.providerId
+		const provider = new Provider({ providerId: providerId })
 
 		await provider.findOne()
 
 		response.status(200)
 		
-		const serializer = new ProviderSerializer(
+		const providerSerializer = new ProviderSerializer(
 			response.getHeader('Content-Type'),
 			['email', 'createdAt', 'updatedAt', 'version']
 		)
 	
 		response.send(
-			serializer.serialize(provider)
+			providerSerializer.serialize(provider)
 		)
 	} catch (error) {
 		next(error)
@@ -48,26 +49,26 @@ router.post('/', async (request, response, next) => {
 	
 		response.status(201)
 
-		const serializer = new ProviderSerializer(
+		const providerSerializer = new ProviderSerializer(
 			response.getHeader('Content-Type')
 		)
 	
 		response.send(
-			serializer.serialize(provider)
+			providerSerializer.serialize(provider)
 		)
 	} catch (error) {
 		next(error)
 	}
 })
 
-router.put('/:id', async (request, response, next) => {
+router.put('/:providerId', async (request, response, next) => {
 	try {
-		const id = request.params.id
+		const providerId = request.params.providerId
 		const body = request.body
 		const data = Object.assign(
 			{},
 			body,
-			{ id: id }
+			{ providerId: providerId }
 		)
 		const provider = new Provider(data)
 	
@@ -80,10 +81,10 @@ router.put('/:id', async (request, response, next) => {
 	}
 })
 
-router.delete('/:id', async (request, response, next) => {
+router.delete('/:providerId', async (request, response, next) => {
 	try {
-		const id = request.params.id
-		const provider = new Provider({ id: id })
+		const providerId = request.params.providerId
+		const provider = new Provider({ providerId: providerId })
 	
 		await provider.findOne()
 	
@@ -95,5 +96,22 @@ router.delete('/:id', async (request, response, next) => {
 		next(error)
 	}
 })
+
+const validateProviderId = async (request, response, next) => {
+	try {
+		const providerId = request.params.providerId
+		const provider = new Provider({ id: providerId })
+
+		await provider.findOne()
+
+		request.provider = provider
+
+		next()
+	} catch (error) {
+		next(error)
+	}
+}
+
+router.use('/:providerId/products', validateProviderId, ProductsRouter)
 
 module.exports = router
