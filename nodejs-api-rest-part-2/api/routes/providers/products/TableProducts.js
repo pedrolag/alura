@@ -30,6 +30,18 @@ module.exports = {
 		return ModelTableProducts.create(data)
 	},
 
+	update({ id, providerId }, data) {
+		return ModelTableProducts.update(
+			data,
+			{
+				where: {
+					id: id,
+					providerId: providerId
+				},
+			}
+		)
+	},
+
 	destroy(id, providerId) {
 		return ModelTableProducts.destroy({
 			where: {

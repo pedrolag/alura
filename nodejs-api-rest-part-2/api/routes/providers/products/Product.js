@@ -50,6 +50,34 @@ class Product {
 		return result;
 	}
 
+	async update() {
+		const validatedData = {}
+
+		if (typeof this.name === 'string' && this.name.length > 0) {
+			validatedData.name = this.name
+		}
+
+		if (typeof this.price === 'number' && this.price > 0) {
+			validatedData.price = this.price
+		}
+
+		if (typeof this.inventory === 'number') {
+			validatedData.inventory = this.inventory
+		}
+
+		if (Object.keys(validatedData).length === 0) {
+			throw new Error('Data was not provided')
+		}
+
+		return TableProducts.update(
+			{
+				id: this.id,
+				providerId: this.providerId,
+			},
+			validatedData
+		)
+	}
+
 	destroy() {
 		return TableProducts.destroy(this.id, this.providerId)
 	}
@@ -58,7 +86,7 @@ class Product {
 		if (typeof this.name !== 'string' || this.name.length === 0) {
 			throw new Error('Invalid field "name"')
 		}
-		
+
 		if (typeof this.price !== 'number' || this.price.length === 0) {
 			throw new Error('Invalid field "price"')
 		}

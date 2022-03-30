@@ -72,6 +72,28 @@ router.post('/', async (request, response, next) => {
 	}
 })
 
+router.put('/:id', async (request, response, next) => {
+	try {
+		const data = Object.assign(
+			{},
+			request.body,
+			{
+				id: request.params.id,
+				providerId: request.provider.id
+			}
+		)
+
+		const product = new Product(data)
+
+		await product.update()
+
+		response.status(204)
+		response.end()
+	} catch (error) {
+		next(error)
+	}
+})
+
 router.delete('/:id', async (request, response, next) => {
 	const data = {
 		id: request.params.id,
