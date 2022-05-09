@@ -1,4 +1,5 @@
 const ModelTableProducts = require('./ModelTableProducts')
+const instance = require('../../../database')
 
 module.exports = {
 	findAll(providerId) {
@@ -48,6 +49,23 @@ module.exports = {
 				id: id,
 				providerId: providerId
 			}
+		})
+	},
+
+	decrementFromInventory(id, providerId, field, quantity) {
+		instance.transaction(async transaction => {
+			const product = await ModelTableProducts.findOne({
+				where: {
+					id: id,
+					providerId: providerId
+				}
+			})
+
+			product[field] = quantity
+			
+			await product.save()
+
+			return product
 		})
 	}
 }

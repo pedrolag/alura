@@ -108,4 +108,26 @@ router.delete('/:id', async (request, response, next) => {
 	response.end()
 })
 
+router.post('/:id/decrement-from-inventory', async (request, response, next) => {
+	try {
+		const product = new Product({
+			id: request.params.id,
+			providerId: request.provider.id
+		})
+	
+		// Checks if the product exists
+		await product.findOne()
+
+		// Decrements quantity from inventory
+		product.inventory -= request.body.quantity
+		await product.decrementFromInventory()
+
+		// Returns response
+		response.status(204)
+		response.end()
+	} catch (error) {
+		next(error)
+	}
+})
+
 module.exports = router

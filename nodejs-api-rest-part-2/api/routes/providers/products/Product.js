@@ -91,6 +91,15 @@ class Product {
 			throw new Error('Invalid field "price"')
 		}
 	}
+
+	decrementFromInventory() {
+		return TableProducts.decrementFromInventory(
+			this.id,
+			this.providerId,
+			'inventory',
+			this.inventory
+		)
+	}
 }
 
 module.exports = Product
