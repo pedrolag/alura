@@ -14,7 +14,7 @@ module.exports = {
 		})
 
 		if (!result) {
-			throw new NotFound();
+			throw new NotFound(`Provider with id "${id}"`);
 		}
 
 		return result

@@ -1,6 +1,6 @@
 class InvalidContentType extends Error {
 	constructor (contentType) {
-		const message = `Invalid content type: ${contentType}`
+		const message = `Invalid content type for field "${contentType}"`
 		
 		super(message) 
 

@@ -36,21 +36,25 @@ app.use((request, response, next) => {
 app.use('/api/providers', router)
 
 app.use((error, request, response, next) => {
+	let status = 500
+
 	if (error instanceof NotFound) {
-		response.status(404)
+		status = 404
 	} 
 	
 	if (error instanceof Invalid || error instanceof NotProvided) {
-		response.status(400)
+		status = 400
 	}
 
 	if (error instanceof InvalidContentType) {
-		response.status(406)
+		status = 406
 	} 
 
 	const errorSerializer = new ErrorSerializer(
 		response.getHeader('Content-Type')
 	)
+
+	response.status(status)
 	response.send(
 		errorSerializer.serialize({
 			message: error.message,

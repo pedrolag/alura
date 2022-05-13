@@ -38,9 +38,37 @@ router.get('/:id', async (request, response, next) => {
 			]
 		)
 
+		const timestamp = (new Date(product.updatedAt)).getTime()
+
+		response.set('ETag', product.version)
+		response.set('Last-Modified', timestamp)
+		
 		response.send(
 			JSON.stringify(product)
 		)
+	} catch (error) {
+		next(error)
+	}
+})
+
+router.head('/:id', async (request, response, next) => {
+	try {
+		const data = {
+			id: request.params.id,
+			providerId: request.provider.id
+		}
+
+		const product = new Product(data)
+
+		await product.findOne()
+
+		const timestamp = (new Date(product.updatedAt)).getTime()
+
+		response.set('ETag', product.version)
+		response.set('Last-Modified', timestamp)
+
+		response.status(200)
+		response.end()
 	} catch (error) {
 		next(error)
 	}
@@ -62,6 +90,12 @@ router.post('/', async (request, response, next) => {
 		const productSerializer = new ProductSerializer(
 			response.getHeader('Content-Type')
 		)
+
+		const timestamp = (new Date(product.updatedAt)).getTime()
+
+		response.set('ETag', product.version)
+		response.set('Last-Modified', timestamp)
+		response.set('Location', `/api/providers/${product.providerId}/products/${product.id}`)
 
 		response.status(201)
 		response.send(
@@ -86,6 +120,13 @@ router.put('/:id', async (request, response, next) => {
 		const product = new Product(data)
 
 		await product.update()
+		await product.findOne()
+
+		const timestamp = (new Date(product.updatedAt)).getTime()
+
+		response.set('ETag', product.version)
+		response.set('Last-Modified', timestamp)
+		response.set('Location', `/api/providers/${product.providerId}/products/${product.id}`)
 
 		response.status(204)
 		response.end()
@@ -121,6 +162,16 @@ router.post('/:id/decrement-from-inventory', async (request, response, next) => 
 		// Decrements quantity from inventory
 		product.inventory -= request.body.quantity
 		await product.decrementFromInventory()
+
+		// Updates the state
+		await product.findOne()
+
+		const timestamp = (new Date(product.updatedAt)).getTime()
+
+		// Increments headers
+		response.set('ETag', product.version)
+		response.set('Last-Modified', timestamp)
+		response.set('Location', `/api/providers/${product.providerId}/products/${product.id}`)
 
 		// Returns response
 		response.status(204)

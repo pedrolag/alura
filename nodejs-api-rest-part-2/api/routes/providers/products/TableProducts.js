@@ -1,5 +1,6 @@
 const ModelTableProducts = require('./ModelTableProducts')
 const instance = require('../../../database')
+const NotFound = require ('../../../errors/NotFound')
 
 module.exports = {
 	findAll(providerId) {
@@ -21,7 +22,7 @@ module.exports = {
 		})
 
 		if (!result) {
-			throw new Error('Product was not found')
+			throw new NotFound( `Product with id "${id}" and providerId "${providerId}"`)
 		}
 
 		return result

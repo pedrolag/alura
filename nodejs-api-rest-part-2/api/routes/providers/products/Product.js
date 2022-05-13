@@ -1,4 +1,6 @@
 const TableProducts = require('./TableProducts')
+const NotProvided = require('../../../errors/NotProvided')
+const InvalidContentType = require('../../../errors/InvalidContentType')
 
 class Product {
 	constructor({
@@ -66,7 +68,7 @@ class Product {
 		}
 
 		if (Object.keys(validatedData).length === 0) {
-			throw new Error('Data was not provided')
+			throw new NotProvided()
 		}
 
 		return TableProducts.update(
@@ -84,11 +86,11 @@ class Product {
 
 	validate() {
 		if (typeof this.name !== 'string' || this.name.length === 0) {
-			throw new Error('Invalid field "name"')
+			throw new InvalidContentType('name')
 		}
 
 		if (typeof this.price !== 'number' || this.price.length === 0) {
-			throw new Error('Invalid field "price"')
+			throw new InvalidContentType('price')
 		}
 	}
 
