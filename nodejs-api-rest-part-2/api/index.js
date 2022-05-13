@@ -33,6 +33,12 @@ app.use((request, response, next) => {
 	next()
 })
 
+app.use((request, response, next) => {
+	response.set('Access-Control-Allow-Origin', '*')
+
+	next()
+})
+
 app.use('/api/providers', router)
 
 app.use((error, request, response, next) => {
