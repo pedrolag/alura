@@ -4,6 +4,27 @@ const TableProducts = require('./TableProducts')
 const Product = require('./Product')
 const ProductSerializer = require('../../../Serializer').ProductSerializer
 
+router.options('/', (request, response) => {
+	response.set('Access-Control-Allow-Methods', 'GET, POST')
+	response.set('Access-Control-Allow-Headers', 'Content-Type')
+	response.status(204)
+	response.end()
+})
+
+router.options('/:id', (request, response) => {
+	response.set('Access-Control-Allow-Methods', 'HEAD, GET, PUT, DELETE')
+	response.set('Access-Control-Allow-Headers', 'Content-Type')
+	response.status(204)
+	response.end()
+})
+
+router.options('/:providerId/decrement-from-inventory', (request, response) => {
+	response.set('Access-Control-Allow-Methods', 'POST')
+	response.set('Access-Control-Allow-Headers', 'Content-Type')
+	response.status(204)
+	response.end()
+})
+
 router.get('/', async (request, response, next) => {
 	const result = await TableProducts.findAll(request.provider.id)
 	const productSerializer = new ProductSerializer(
