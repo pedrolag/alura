@@ -4,6 +4,13 @@ const Provider = require('./Provider')
 const ProviderSerializer = require('../../Serializer').ProviderSerializer
 const ProductsRouter = require('./products')
 
+router.options('/', (request, response) => {
+	response.set('Access-Control-Allow-Methods', 'GET, POST')
+	response.set('Access-Control-Allow-Headers', 'Content-Type')
+	response.status(204)
+	response.end()
+})
+
 router.get('/', async (request, response) => {
 	const result = await TableProviders.findAll()
 	
@@ -16,6 +23,35 @@ router.get('/', async (request, response) => {
 	response.send(
 		providerSerializer.serialize(result)
 	)
+})
+
+
+router.post('/', async (request, response, next) => {
+	try {
+		const body = request.body
+		const provider = new Provider(body)
+	
+		await provider.create()
+	
+		response.status(201)
+
+		const providerSerializer = new ProviderSerializer(
+			response.getHeader('Content-Type')
+		)
+	
+		response.send(
+			providerSerializer.serialize(provider)
+		)
+	} catch (error) {
+		next(error)
+	}
+})
+
+router.options('/:providerId', (request, response) => {
+	response.set('Access-Control-Allow-Methods', 'GET, PUT, DELETE')
+	response.set('Access-Control-Allow-Headers', 'Content-Type')
+	response.status(204)
+	response.end()
 })
 
 router.get('/:providerId', async (request, response, next) => {
@@ -40,27 +76,6 @@ router.get('/:providerId', async (request, response, next) => {
 	}
 })
 
-router.post('/', async (request, response, next) => {
-	try {
-		const body = request.body
-		const provider = new Provider(body)
-	
-		await provider.create()
-	
-		response.status(201)
-
-		const providerSerializer = new ProviderSerializer(
-			response.getHeader('Content-Type')
-		)
-	
-		response.send(
-			providerSerializer.serialize(provider)
-		)
-	} catch (error) {
-		next(error)
-	}
-})
-
 router.put('/:providerId', async (request, response, next) => {
 	try {
 		const providerId = request.params.providerId
@@ -68,7 +83,7 @@ router.put('/:providerId', async (request, response, next) => {
 		const data = Object.assign(
 			{},
 			body,
-			{ providerId: providerId }
+			{ id: providerId }
 		)
 		const provider = new Provider(data)
 	
